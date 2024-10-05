@@ -51,3 +51,29 @@ def complement(sequence):
 def reverse_complement(sequence):
     return reverse(complement(sequence))
 
+
+def count_gc(sequence):
+    g_count = sequence.count('G') + sequence.count('g')
+    c_count = sequence.count('C') + sequence.count('c')
+    return (g_count + c_count) / len(sequence) * 100
+
+
+def get_mean_quality(quality):
+    return sum(ord(q) - 33 for q in quality) / len(quality)
+
+
+def filter_fastq(seqs, gc_bounds = (0, 100), length_bounds = (0, 2 ** 32), quality_threshold = 0):
+    if isinstance(gc_bounds, (int, float)):
+        gc_bounds = (0, gc_bounds)
+        
+    gc_min, gc_max = gc_bounds
+    length_min, length_max = length_bounds
+
+    filtered_seqs = {}
+    
+    for seq_id, (seq, quality) in seqs.items():
+        gc_content = count_gc(seq)
+        if gc_min <= gc_content <= gc_max and length_min <= len(seq) <= length_max and get_mean_quality(quality) >= quality_threshold:
+            filtered_seqs[seq_id] = (seq, quality)
+            
+    return filtered_seqs
