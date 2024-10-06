@@ -14,8 +14,8 @@ cd bioseq_tools
 
 ## Usage
 
-DNA/RNA Processing
-	The main function run_dna_rna_tools allows you to perform various DNA/RNA operations.
+**DNA/RNA Processing** 
+- The main function run_dna_rna_tools allows you to perform various DNA/RNA operations.
 
 #### Example:
 
@@ -25,8 +25,8 @@ result = run_dna_rna_tools("AtGcTCgGtA", "complement")
 print(result) # Output: "TaCgAGcCaT"
 ~~~
 
-FASTQ Filtering
-	The function filter_fastq filters sequences based on specified criteria.
+**FASTQ Filtering**
+- The function filter_fastq filters sequences based on specified criteria.
 
 #### Example:
 
@@ -35,8 +35,8 @@ from dna_rna_tools import filter_fastq
 fastq_sequences = {
     "seq1": ("ATCG", "IIII"),         
     "seq2": ("ATCGG", "BBIII"),         
-    "seq6": ("CGATG", "FFFFF"),    
-    "seq7": ("A", "I")                
+    "seq3": ("CGATG", "FFFFF"),    
+    "seq4": ("A", "I")                
 }
 
 filtered = filter_fastq(fastq_sequences, gc_bounds = (0, 100), quality_threshold = 20)
