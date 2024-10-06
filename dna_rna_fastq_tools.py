@@ -8,7 +8,7 @@ def run_dna_rna_tools(*args: str) -> str:
     sequences = args[:-1]
 
     for seq in sequences:
-        if not set(seq).issubset(set("ATCGUatcgu")) or ('T' in seq and 'U' in seq):
+        if not set(seq).issubset(set("ATCGUatcgu")) or ("T" in seq and "U" in seq):
             return f"Incorrect sequence (not DNA or RNA): {seq}"
 
     if procedure == "transcribe":
@@ -29,7 +29,12 @@ def run_dna_rna_tools(*args: str) -> str:
     return result
 
 
-def filter_fastq(seqs: dict, gc_bounds: tuple = (0, 100), length_bounds: tuple = (0, 2 ** 32), quality_threshold: float = 0) -> dict:
+def filter_fastq(
+    seqs: dict,
+    gc_bounds: tuple = (0, 100),
+    length_bounds: tuple = (0, 2**32),
+    quality_threshold: float = 0,
+) -> dict:
     """Filters FASTQ sequences based on GC bounds, length and quality threshold"""
     if isinstance(gc_bounds, (int, float)):
         gc_bounds = (0, gc_bounds)
@@ -41,7 +46,11 @@ def filter_fastq(seqs: dict, gc_bounds: tuple = (0, 100), length_bounds: tuple =
 
     for seq_id, (seq, quality) in seqs.items():
         gc_content = count_gc(seq)
-        if (gc_min <= gc_content <= gc_max and length_min <= len(seq) <= length_max and get_mean_quality(quality) >= quality_threshold):
+        if (
+            gc_min <= gc_content <= gc_max
+            and length_min <= len(seq) <= length_max
+            and get_mean_quality(quality) >= quality_threshold
+        ):
             filtered_seqs[seq_id] = (seq, quality)
 
     return filtered_seqs
