@@ -39,6 +39,9 @@ def filter_fastq(
     if isinstance(gc_bounds, (int, float)):
         gc_bounds = (0, gc_bounds)
 
+    if isinstance(length_bounds, int):
+        length_bounds = (length_bounds, length_bounds) 
+
     gc_min, gc_max = gc_bounds
     length_min, length_max = length_bounds
 
