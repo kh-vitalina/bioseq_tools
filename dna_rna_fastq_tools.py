@@ -1,5 +1,5 @@
 from modules.dna_rna_module import transcribe, reverse, complement, reverse_complement
-from modules.fastq_module import count_gc, get_mean_quality
+from modules.fastq_module import count_gc, get_mean_quality, read_fastq, write_fastq
 
 
 def run_dna_rna_tools(*args: str) -> str:
@@ -30,12 +30,18 @@ def run_dna_rna_tools(*args: str) -> str:
 
 
 def filter_fastq(
-    seqs: dict,
+    input_fastq: str,
+    output_fastq: str,
     gc_bounds: tuple = (0, 100),
     length_bounds: tuple = (0, 2**32),
     quality_threshold: float = 0,
-) -> dict:
-    """Filters FASTQ sequences based on GC bounds, length and quality threshold"""
+):
+    """
+    Filters sequences from input FASTQ file based on GC bounds, length and quality threshold
+    Args:
+        input_fastq: path to the input FASTQ file
+        output_fastq: path to save filtered sequences
+    """
     if isinstance(gc_bounds, (int, float)):
         gc_bounds = (0, gc_bounds)
 
@@ -44,16 +50,13 @@ def filter_fastq(
 
     gc_min, gc_max = gc_bounds
     length_min, length_max = length_bounds
-
-    filtered_seqs = {}
-
-    for seq_id, (seq, quality) in seqs.items():
-        gc_content = count_gc(seq)
-        if (
-            gc_min <= gc_content <= gc_max
-            and length_min <= len(seq) <= length_max
-            and get_mean_quality(quality) >= quality_threshold
-        ):
-            filtered_seqs[seq_id] = (seq, quality)
-
-    return filtered_seqs
+    
+    with open(input_fastq, "r") as infile, open(f"filtered/{output_fastq}", "w") as outfile:
+        for record in read_fastq(infile):
+            seq_id, seq, quality = record
+            if (
+                gc_min <= count_gc(seq) <= gc_max
+                and length_min <= len(seq) <= length_max
+                and get_mean_quality(quality) >= quality_threshold
+            ):
+                write_fastq(outfile, seq_id, seq, quality)
