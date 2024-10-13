@@ -46,12 +46,14 @@ def filter_fastq(
         gc_bounds = (0, gc_bounds)
 
     if isinstance(length_bounds, int):
-        length_bounds = (length_bounds, length_bounds) 
+        length_bounds = (length_bounds, length_bounds)
 
     gc_min, gc_max = gc_bounds
     length_min, length_max = length_bounds
-    
-    with open(input_fastq, "r") as infile, open(f"filtered/{output_fastq}", "w") as outfile:
+
+    with open(input_fastq, "r") as infile, open(
+        f"filtered/{output_fastq}", "w"
+    ) as outfile:
         for record in read_fastq(infile):
             seq_id, seq, quality = record
             if (
