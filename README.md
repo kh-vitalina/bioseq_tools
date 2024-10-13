@@ -13,7 +13,7 @@ git clone https://github.com/kh-vitalina/bioseq_tools.git && cd bioseq_tools
 
 ## Usage:
 
-####dna_rna_fastq_tools.py
+## dna_rna_fastq_tools.py
 
 **DNA/RNA Processing** 
 - The main function run_dna_rna_tools allows you to perform various DNA/RNA operations.
@@ -46,7 +46,7 @@ The package includes two main functionalities:
 - **run_dna_rna_tools**: Functions for transcribing, reversing, complementing, and getting reverse complements of sequences.
 - **filter_fastq**: Filters sequences based on GC bounds, length, and quality threshold.
 
-#### bio_files_processor.py
+## bio_files_processor.py
 
 **FASTA Processing**
 - The function convert_multiline_fasta_to_oneline converts a multiline FASTA file into a oneline format.
