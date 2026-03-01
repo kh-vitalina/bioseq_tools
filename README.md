@@ -11,23 +11,46 @@ Clone the repository and navigate to the project directory:
 git clone https://github.com/kh-vitalina/bioseq_tools.git && cd bioseq_tools
 ```
 
+## Requirements
+
+```
+biopython>=1.79
+```
+
 ## Usage:
 
 ## dna_rna_fastq_tools.py
 
 **DNA/RNA Processing** 
-- The main function run_dna_rna_tools allows you to perform various DNA/RNA operations.
+The module now uses classes for working with biological sequences:
+
+- `DNASequence` - for DNA sequences (complement, reverse, reverse_complement, transcribe)
+- `RNASequence` - for RNA sequences (complement, reverse, reverse_complement)
+- `AminoAcidSequence` - for protein sequences (molecular_weight calculation)
 
 #### Example:
 
 ~~~python
-from dna_rna_fastq_tools import run_dna_rna_tools
-result = run_dna_rna_tools("AtGcTCgGtA", "complement")
-print(result) # Output: "TaCgAGcCaT"
+from dna_rna_fastq_tools import DNASequence, RNASequence, AminoAcidSequence
+
+#DNA sequence
+dna = DNASequence("ATGC")
+print(dna.complement())        #output TACG
+print(dna.reverse())           #output CGTA
+print(dna.reverse_complement()) #output GCAT
+print(dna.transcribe())        #output AUGC
+
+#RNA sequence
+rna = RNASequence("AUGC")
+print(rna.complement())        #output UACG
+
+#Protein sequence
+protein = AminoAcidSequence("MVLSPADKT")
+print(protein.molecular_weight()) #output molecular weight
 ~~~
 
 **FASTQ Filtering**
-- The function filter_fastq filters sequences from a FASTQ file based on specified criteria.
+- The function `filter_fastq` filters sequences from a FASTQ file based on specified criteria using Biopython.
 
 #### Example:
 
@@ -43,8 +66,8 @@ filter_fastq(input_fastq, output_fastq, gc_bounds=(0, 100), quality_threshold=20
 #### Overview:
 
 The package includes two main functionalities:
-- **run_dna_rna_tools**: Functions for transcribing, reversing, complementing, and getting reverse complements of sequences.
-- **filter_fastq**: Filters sequences based on GC bounds, length, and quality threshold.
+- **Sequence classes**: Object-oriented approach for DNA, RNA and protein sequences
+- **filter_fastq**: Filters FASTQ reads based on GC content, length, and quality using Biopython
 
 ## bio_files_processor.py
 
@@ -74,10 +97,8 @@ The package includes two main functionalities:
 - **convert_multiline_fasta_to_oneline**: Converts FASTA files with multiline sequences to a oneline format.
 - **parse_blast_output**: Parses BLAST output files and extracts best match descriptions.
 
-## Modules Structure
+## Project Structure
 
-#### modules
-- **dna_rna_module.py**: contains functions related to DNA/RNA processing.
-- **fastq_module.py**: contains functions for filtering FASTQ sequences.
-- **read_fastq**: generator function to read sequences from a FASTQ file
-- **write_fastq**: write sequences to a FASTQ file
+- **dna_rna_fastq_tools.py**: main script with sequence classes and FASTQ filtering
+- **bio_files_processor.py**: functions for FASTA and BLAST processing
+```
