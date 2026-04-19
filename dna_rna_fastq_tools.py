@@ -2,6 +2,19 @@ from abc import ABC, abstractmethod
 from Bio import SeqIO
 from Bio.SeqUtils import gc_fraction
 import os
+import logging
+import argparse
+
+
+logger = logging.getLogger("fastq_filter")
+logger.setLevel(logging.DEBUG)
+
+
+file_handler = logging.FileHandler("fastq_filter.log")
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 class BiologicalSequence(ABC):
     """Base class for all biological sequences"""
@@ -119,6 +132,13 @@ def filter_fastq(input_fastq, output_fastq, gc_bounds=(0, 100),
     gc_min, gc_max = gc_bounds
     len_min, len_max = length_bounds
     
+    if not os.path.exists(input_fastq):
+        logger.error(f"Input file not found: {input_fastq}")
+        raise FileNotFoundError(f"Input file not found: {input_fastq}")
+    
+    logger.info(f"Starting filtering: {input_fastq} -> {output_fastq}")
+    logger.info(f"Parameters: gc_bounds={gc_bounds}, length_bounds={length_bounds}, quality_threshold={quality_threshold}")
+
     output_dir = os.path.dirname(output_fastq)
     if output_dir and not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -144,5 +164,23 @@ def filter_fastq(input_fastq, output_fastq, gc_bounds=(0, 100),
             SeqIO.write(record, out, 'fastq')
             filtered += 1
     
-    print(f"Processed {total} reads, kept {filtered}")
+    logger.info(f"Processed {total} reads, kept {filtered}")
     return filtered
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="FASTQ filter")
+    parser.add_argument("input", help="input FASTQ file")
+    parser.add_argument("output", help="output FASTQ file")
+    parser.add_argument("--gc_min", type=float, default=0)
+    parser.add_argument("--gc_max", type=float, default=100)
+    parser.add_argument("--len_min", type=int, default=0)
+    parser.add_argument("--len_max", type=int, default=2**32)
+    parser.add_argument("--quality", type=float, default=0)
+ 
+    args = parser.parse_args()
+ 
+    filter_fastq(args.input, args.output,
+                 gc_bounds=(args.gc_min, args.gc_max),
+                 length_bounds=(args.len_min, args.len_max),
+                 quality_threshold=args.quality)
